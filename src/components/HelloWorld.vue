@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <form action="" @submit.prevent="">
+    <form action="" method="post" @submit.prevent="axiosPostData">
       <v-card-title>
         Nutrition
         <v-spacer></v-spacer>
@@ -35,7 +35,7 @@
       <v-footer color="blue accent-2" fixed class="d-flex justify-space-between">
         <span>Tổng số domains: {{ countTotalItems }}</span>
         <span>Tổng số countries: {{ countTotalItems }}</span>
-        <v-btn class="px-12" color="blue-grey lighten-5">Submit</v-btn>
+        <v-btn type="submit" class="px-12" color="blue-grey lighten-5">Submit</v-btn>
       </v-footer>
     </form>
   </v-card>
@@ -46,6 +46,13 @@
   import { mapState } from 'vuex'
   import { mapGetters } from 'vuex'
   export default {
+    methods: {
+      axiosPostData () {
+        this.$axios.post('http://localhost:3000/urls', {
+          urls: this.$store.state.selected
+        })
+      }
+    },
     computed: {
       selected: {
         get () {

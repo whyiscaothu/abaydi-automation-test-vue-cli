@@ -216,6 +216,14 @@ export default new Vuex.Store({
         version: 7,
         active: true,
       },
+      {
+        name: 'https://www.canadavisagov.com',
+        order: `https://www.canadavisagov.com/apply-visa`,
+        payment: `https://www.canadavisagov.com/make-payment`,
+        contact: `https://www.canadavisagov.com/contact-us`,
+        version: 3,
+        active: true,
+      },
     ],
   },
   getters: {
