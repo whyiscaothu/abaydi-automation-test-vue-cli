@@ -20,11 +20,15 @@
       >
         <template v-slot:body>
           <tbody>
-          <tr v-for="item in items" :key="item.name" v-if="item.active">
-            <td :search="search">{{ item.name }}</td>
-            <td><v-switch :value="item.order" v-model="selected"></v-switch></td>
-            <td><v-switch :value="item.payment" v-model="selected"></v-switch></td>
-            <td><v-switch :value="item.contact" v-model="selected"></v-switch></td>
+          <tr v-for="(item, index) in items" :key="item.name">
+            <td :search="search">{{index + 1}}</td>
+            <td :search="search">{{item.marketplace}}</td>
+            <td :search="search">
+              <a :href="'https://www.' + item.name" target="_blank">{{ item.name }}</a>
+            </td>
+            <td><v-switch :value="'https://www.' + item.name + '/apply-visa'" v-model="selected"></v-switch></td>
+            <td><v-switch :value="'https://www.' + item.name + '/make-payment'" v-model="selected"></v-switch></td>
+            <td><v-switch :value="'https://www.' + item.name + '/contact-us'" v-model="selected"></v-switch></td>
             <td>{{ item.version }}</td>
           </tr>
           </tbody>
@@ -76,6 +80,11 @@
       search: String,
       headers: Array,
       items: Array*/
+    },
+    created() {
+      this.$axios.post('http://localhost:3000/domains').then(({data}) => {
+        this.$store.commit('initData', data);
+      });
     }
   }
 </script>
