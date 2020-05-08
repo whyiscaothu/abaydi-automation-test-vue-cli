@@ -46,6 +46,9 @@ export default new Vuex.Store({
   getters: {
     countTotalItems: state => {
       return state.items.length;
+    },
+    countSelectedItems: state => {
+      return state.selected.length;
     }
   },
   mutations: {
