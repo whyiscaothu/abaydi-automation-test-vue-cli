@@ -1,34 +1,23 @@
 <template>
   <v-card>
     <form action="" method="post" @submit.prevent="axiosPostData">
-      <v-card-title>
-        Nutrition
-        <v-spacer></v-spacer>
-        <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-        ></v-text-field>
-      </v-card-title>
       <v-data-table
+              dark
               :headers="headers"
               :items="items"
-              :search="search"
               hide-default-footer
       >
         <template v-slot:body>
           <tbody>
-            <tr v-for="(item, index) in items" :key="item.name">
+            <tr v-for="(item, index) in items" :key="index">
               <td :search="search">{{index + 1}}</td>
               <td :search="search">{{item.marketplace}}</td>
               <td :search="search">
                 <a :href="'https://www.' + item.name" target="_blank">{{ item.name }}</a>
               </td>
-              <td><v-switch :value="'https://www.' + item.name + '/apply-visa'" v-model="selected"></v-switch></td>
-              <td><v-switch :value="'https://www.' + item.name + '/make-payment'" v-model="selected"></v-switch></td>
-              <td><v-switch :value="'https://www.' + item.name + '/contact-us'" v-model="selected"></v-switch></td>
+              <td><v-switch v-model="item.run_order"></v-switch></td>
+              <td><v-switch v-model="item.run_payment"></v-switch></td>
+              <td><v-switch v-model="item.run_contact"></v-switch></td>
   <!--      if/else block statement-->
               <v-chip class="ma-2" color="blue darken-4" text-color="white" v-if="item.version === '2.1'">
                 <v-avatar left>
@@ -59,31 +48,32 @@
           </tbody>
         </template>
       </v-data-table>
+      <p>{{selected}}</p>
       <p>hãy xóa tôi</p>
       <v-footer color="blue accent-2" fixed class="d-flex justify-space-between">
 
         <span>
-          <v-badge color="green lighten-1" overlap :content="countTotalItems" v-if="countTotalItems" :key="countTotalItems">
+          <v-badge color="green lighten-1" overlap :content="countTotalItems" v-if="countTotalItems">
             <v-chip class="ma-2">Domains</v-chip>
           </v-badge>
-          <span v-else :key="countTotalItems">
+          <span v-else>
             <v-chip class="ma-2">Domains</v-chip>
           </span>
         </span>
         <span>
-          <v-badge color="green lighten-1" overlap :content="countTotalItems" v-if="countTotalItems" :key="">
+          <v-badge color="green lighten-1" overlap :content="countTotalItems" v-if="countTotalItems">
             <v-chip class="ma-2">Market Place</v-chip>
           </v-badge>
-          <span v-else :key="">
+          <span v-else>
             <v-chip class="ma-2">Market Place</v-chip>
           </span>
         </span>
 
         <span>
-          <v-badge color="orange" overlap :content="countSelectedItems" v-if="countSelectedItems" :key="selected">
+          <v-badge color="orange" overlap :content="countSelectedItems" v-if="countSelectedItems">
             <v-chip class="ma-2">Selected</v-chip>
           </v-badge>
-          <span v-else :key="selected">
+          <span v-else>
             <v-chip class="ma-2">Selected</v-chip>
           </span>
         </span>
@@ -98,12 +88,19 @@
   import { mapState } from 'vuex'
   import { mapGetters } from 'vuex'
   export default {
+    data(){
+      return {
+        selectedItems: []
+      }
+    },
     methods: {
       axiosPostData () {
+        let data = this.items;
+        data = data.filter((item) => (item.run_order || item.run_order || item.run_order));
         this.$axios.post('http://localhost:3000/urls', {
-          urls: this.$store.state.selected
+          urls: data
         })
-      }
+      },
     },
     computed: {
       selected: {
@@ -111,6 +108,7 @@
           return this.$store.state.selected;
         },
         set (value) {
+          console.log(value);
           this.$store.commit('selection', value)
         }
       },
@@ -124,15 +122,14 @@
               'countSelectedItems',
       ])
     },
-    props: {
-/*      selected: Array,
-      search: String,
-      headers: Array,
-      items: Array*/
-    },
     created() {
       this.$axios.post('http://localhost:3000/domains').then(({data}) => {
-        this.$store.commit('initData', data);
+        for(let item of data){
+          item.run_order = false;
+          item.run_payment = false;
+          item.run_contact = false;
+        }
+        this.$store.dispatch('initData', data);
       });
     }
   }

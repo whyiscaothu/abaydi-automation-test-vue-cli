@@ -3,7 +3,6 @@ import './plugins/axios'
 import store from './store'
 import App from './App.vue'
 import vuetify from './plugins/vuetify';
-console.log('main.js')
 
 Vue.config.productionTip = false
 let isSuccess = 'success'

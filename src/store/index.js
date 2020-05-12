@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-console.log('store/index.js')
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -55,12 +52,11 @@ export default new Vuex.Store({
     selection (state, value) {
       state.selected = value;
     },
-    initData (state, value) {
-      state.items = value;
-    }
   },
   actions: {
-
+    initData ({state}, value) {
+      state.items = value;
+    }
   },
   modules: {
 
