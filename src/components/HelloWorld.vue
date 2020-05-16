@@ -95,10 +95,10 @@
     },
     methods: {
       axiosPostData () {
-        let data = this.items;
-        data = data.filter((item) => (item.run_order || item.run_order || item.run_order));
-        this.$axios.post('http://localhost:3000/urls', {
-          urls: data
+        let dataSubmit = this.items;
+        dataSubmit = dataSubmit.filter((item) => (item.run_order || item.run_order || item.run_order));
+        this.$axios.post('http://localhost:9009/data-submit', {
+          dataSubmit
         })
       },
     },
@@ -123,7 +123,7 @@
       ])
     },
     created() {
-      this.$axios.post('http://localhost:3000/domains').then(({data}) => {
+      this.$axios.post(`http://localhost:9009/domains`).then(({data}) => {
         for(let item of data){
           item.run_order = false;
           item.run_payment = false;

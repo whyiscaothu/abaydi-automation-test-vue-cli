@@ -45,7 +45,19 @@ export default new Vuex.Store({
       return state.items.length;
     },
     countSelectedItems: state => {
-      return state.selected.length;
+      let flag = 0;
+      for (let item of state.items) {
+        if (item.run_order) {
+          flag++
+        }
+        if (item.run_payment) {
+          flag++
+        }
+        if (item.run_contact) {
+          flag++
+        }
+      }
+      return flag;
     }
   },
   mutations: {
