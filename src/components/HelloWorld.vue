@@ -61,7 +61,7 @@
           </span>
         </span>
         <span>
-          <v-badge color="green lighten-1" overlap :content="countTotalItems" v-if="countTotalItems">
+          <v-badge color="green lighten-1" overlap :content="countMarketPlace" v-if="countMarketPlace">
             <v-chip class="ma-2">Market Place</v-chip>
           </v-badge>
           <span v-else>
@@ -120,6 +120,7 @@
       ...mapGetters([
               'countTotalItems',
               'countSelectedItems',
+              'countMarketPlace',
       ])
     },
     created() {

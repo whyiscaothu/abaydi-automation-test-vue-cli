@@ -58,7 +58,15 @@ export default new Vuex.Store({
         }
       }
       return flag;
-    }
+    },
+    countMarketPlace: state => {
+      let tmpArr = [];
+      for (let item of state.items) {
+        tmpArr.push(item.marketplace)
+      }
+      let unique = [...new Set(tmpArr)];
+      return unique.length;
+    },
   },
   mutations: {
     selection (state, value) {
