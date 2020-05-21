@@ -99,6 +99,8 @@
         dataSubmit = dataSubmit.filter((item) => (item.run_order || item.run_order || item.run_order));
         this.$axios.post('http://localhost:9009/data-submit', {
           dataSubmit
+        }).then(function (response) {
+          alert('Đã chạy thành công: ' + response.data.length);
         })
       },
     },
