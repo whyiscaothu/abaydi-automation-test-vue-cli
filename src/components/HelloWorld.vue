@@ -1,15 +1,98 @@
 <template>
   <v-card>
     <form action="" method="post" @submit.prevent="axiosPostData">
+      <v-card-title>
+        Domain
+        <v-spacer></v-spacer>
+      </v-card-title>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="3">
+            <v-select
+                    v-model="marketplaceSelect"
+                    :items="marketplaceItems"
+                    v-on:change="changeFilter"
+                    label="Marketplace"
+                    multiple
+                    dense
+                    outlined
+            >
+              <template v-slot:prepend-item>
+                <v-list-item
+                        ripple
+                        @click="toggleFilterMarketplace"
+                >
+                  <v-list-item-action>
+                    <v-icon :color="marketplaceSelect.length > 0 ? 'indigo darken-4' : ''">{{ iconfilterMarketplace }}</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title>Select All</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider class="mt-2"></v-divider>
+              </template>
+              <template v-slot:selection="{ item, index }">
+                <v-chip v-if="index === 0">
+                  <span>{{ item }}</span>
+                </v-chip>
+                <v-chip v-if="index === 1">
+                  <span>{{ item }}</span>
+                </v-chip>
+                <span
+                  v-if="index === 2"
+                  class="grey--text caption"
+                >(+{{ marketplaceSelect.length - 2 }} others)</span>
+              </template>
+            </v-select>
+          </v-col>
+          <v-col cols="3">
+            <v-select
+                    v-model="versionSelect"
+                    :items="versionItems"
+                    v-on:change="changeFilter"
+                    label="Version"
+                    multiple
+                    dense
+                    outlined
+            >
+              <template v-slot:prepend-item>
+                <v-list-item
+                        ripple
+                        @click="toggleFilterVersion"
+                >
+                  <v-list-item-action>
+                    <v-icon :color="versionSelect.length > 0 ? 'indigo darken-4' : ''">{{ iconfilterVersion }}</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title>Select All</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider class="mt-2"></v-divider>
+              </template>
+              <template v-slot:selection="{ item, index }">
+                <v-chip v-if="index === 0">
+                  <span>{{ item }}</span>
+                </v-chip>
+                <v-chip v-if="index === 1">
+                  <span>{{ item }}</span>
+                </v-chip>
+                <span
+                        v-if="index === 2"
+                        class="grey--text caption"
+                >(+{{ versionSelect.length - 2 }} others)</span>
+              </template>
+            </v-select>
+          </v-col>
+        </v-row>
+      </v-container>
       <v-data-table
-              dark
               :headers="headers"
               :items="items"
               hide-default-footer
       >
         <template v-slot:body>
           <tbody>
-            <tr v-for="(item, index) in items" :key="index">
+            <tr v-for="(item, index) in items" :key="index" v-if="!item.hide">
               <td :search="search">{{index + 1}}</td>
               <td :search="search">{{item.marketplace}}</td>
               <td :search="search">
@@ -90,7 +173,11 @@
   export default {
     data(){
       return {
-        selectedItems: []
+        selectedItems: [],
+        marketplaceSelect: [],
+        marketplaceItems: [],
+        versionSelect: [],
+        versionItems: [],
       }
     },
     methods: {
@@ -103,6 +190,45 @@
           alert('Đã chạy thành công: ' + response.data.length);
         })
       },
+      toggleFilterMarketplace () {
+        this.$nextTick(() => {
+          if (this.marketplaceSelect.length === this.marketplaceItems.length) {
+            this.marketplaceSelect = []
+          } else {
+            this.marketplaceSelect = this.marketplaceItems.slice()
+          }
+          this.changeFilter();
+        })
+      },
+      toggleFilterVersion () {
+        this.$nextTick(() => {
+          if (this.versionSelect.length === this.versionItems.length) {
+            this.versionSelect = []
+          } else {
+            this.versionSelect = this.versionItems.slice()
+          }
+          this.changeFilter();
+        })
+      },
+      changeFilter() {
+        let versionSelected = this.versionSelect;
+        let marketplaceSelectSelected = this.marketplaceSelect;
+
+        for (let item of this.items){
+          item.hide = true;
+          for(let itemMarketplaceSelected of marketplaceSelectSelected){
+            if(itemMarketplaceSelected === item.marketplace){
+              for(let itemVersionSelected of versionSelected){
+                if(itemVersionSelected === item.version){
+                  item.hide = false;
+                  break;
+                }
+              }
+              break;
+            }
+          }
+        }
+      },
     },
     computed: {
       selected: {
@@ -113,6 +239,16 @@
           console.log(value);
           this.$store.commit('selection', value)
         }
+      },
+      iconfilterMarketplace () {
+        if (this.marketplaceSelect.length === this.marketplaceItems.length) return 'mdi-close-box'
+        if (this.marketplaceSelect.length > 0 && this.marketplaceSelect.length !== this.marketplaceItems.length) return 'mdi-minus-box'
+        return 'mdi-checkbox-blank-outline'
+      },
+      iconfilterVersion () {
+        if (this.versionSelect.length === this.versionItems.length) return 'mdi-close-box'
+        if (this.versionSelect.length > 0 && this.versionSelect.length !== this.versionItems.length) return 'mdi-minus-box'
+        return 'mdi-checkbox-blank-outline'
       },
       ...mapState([
               'items',
@@ -127,11 +263,25 @@
     },
     created() {
       this.$axios.post(`http://localhost:9009/domains`).then(({data}) => {
+        let marketplaceItems = [];
+        let versionItems = [];
         for(let item of data){
           item.run_order = false;
           item.run_payment = false;
           item.run_contact = false;
+          item.hide = false;
+
+          if(marketplaceItems.indexOf(item.marketplace) == -1){
+            marketplaceItems.push(item.marketplace);
+          }
+          if(versionItems.indexOf(item.version) == -1){
+            versionItems.push(item.version);
+          }
         }
+        this.marketplaceItems = marketplaceItems;
+        this.marketplaceSelect = marketplaceItems;
+        this.versionItems = versionItems;
+        this.versionSelect = versionItems;
         this.$store.dispatch('initData', data);
       });
     }
