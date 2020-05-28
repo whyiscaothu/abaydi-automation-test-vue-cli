@@ -45,19 +45,19 @@ export default new Vuex.Store({
       return state.items.length;
     },
     countSelectedItems: state => {
-      let flag = 0;
+      let selected = 0;
       for (let item of state.items) {
         if (item.run_order) {
-          flag++
+          selected++
         }
         if (item.run_payment) {
-          flag++
+          selected++
         }
         if (item.run_contact) {
-          flag++
+          selected++
         }
       }
-      return flag;
+      return selected;
     },
     countMarketPlace: state => {
       let tmpArr = [];

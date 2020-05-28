@@ -176,36 +176,12 @@
                   </v-card-title>
                   <v-card-text>
                     <ul>
-                      <div v-for="result in testResults" :key="result.filename">
-
-
-
-                        <v-row>
-                          <v-dialog v-model="dialog2" width="600px">
-                            <template v-slot:activator="{ on }">
-                              <v-btn color="dark" dark v-on="on" class="ml-5">
-                                {{result.filename}}
-                              </v-btn>
-                            </template>
-                            <v-card>
-                              <v-card-title>
-                                <span class="headline">Detail result.</span>
-                              </v-card-title>
-                              <v-card-text>
-                                <ul>
-                                  <li v-for="(detail, index) in result.data" :key="index">
-                                    {{detail}}
-                                  </li>
-                                </ul>
-                              </v-card-text>
-                            </v-card>
-                          </v-dialog>
-                        </v-row>
-
-
-
-
-                      </div>
+                      <li v-for="(result, index) in testResults" :key="index">
+                        {{result.filename}}
+                        <a :href="`result/${result.filename}`">
+                          <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
+                        </a>
+                      </li>
                     </ul>
                   </v-card-text>
                 </v-card>
@@ -234,6 +210,9 @@
         versionItems: [],
         dialog: false,
         dialog2:false,
+        notifications: false,
+        sound: true,
+        widgets: false,
         testResults: [],
       }
     },
