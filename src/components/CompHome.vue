@@ -209,10 +209,6 @@
         versionSelect: [],
         versionItems: [],
         dialog: false,
-        dialog2:false,
-        notifications: false,
-        sound: true,
-        widgets: false,
         testResults: [],
       }
     },

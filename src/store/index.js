@@ -76,7 +76,7 @@ export default new Vuex.Store({
   actions: {
     initData ({state}, value) {
       state.items = value;
-    }
+    },
   },
   modules: {
 
