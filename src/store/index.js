@@ -39,6 +39,7 @@ export default new Vuex.Store({
       { text: 'Version', value: 'version',sortable: true, divider: true, width: 100 },
     ],
     items: [],
+    testResults: [],
   },
   getters: {
     countTotalItems: state => {
@@ -71,6 +72,9 @@ export default new Vuex.Store({
   mutations: {
     selection (state, value) {
       state.selected = value;
+    },
+    getTestResults (state, value) {
+      state.testResults = value
     },
   },
   actions: {

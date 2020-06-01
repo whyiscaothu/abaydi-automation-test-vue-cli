@@ -209,7 +209,6 @@
         versionSelect: [],
         versionItems: [],
         dialog: false,
-        testResults: [],
       }
     },
     methods: {
@@ -227,8 +226,9 @@
       },
       axiosGetTestResult () {
         this.$axios.post('http://localhost:9009/test-result').then(({data}) => {
-          this.testResults = data
-        })
+          this.$store.commit('getTestResults', data )
+        });
+        return this.testResults;
       },
       toggleFilterMarketplace () {
         this.$nextTick(() => {
@@ -277,10 +277,9 @@
     computed: {
       selected: {
         get () {
-          return this.$store.state.selected;
+          return this.selected;
         },
         set (value) {
-          console.log(value);
           this.$store.commit('selection', value)
         }
       },
@@ -298,6 +297,8 @@
               'items',
               'headers',
               'search',
+              'selected',
+              'testResults',
       ]),
       ...mapGetters([
               'countTotalItems',
