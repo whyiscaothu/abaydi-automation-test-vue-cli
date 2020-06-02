@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <form action="" method="post" @submit.prevent="axiosPostData">
+    <form action="" method="post" @submit.prevent="axiosPostData" class="mb-12 pb-6">
       <v-card-title>
         Domain
         <v-spacer></v-spacer>
@@ -86,7 +86,8 @@
         </v-row>
       </v-container>
       <v-data-table
-              :headers="headers"
+              dark
+              :headers="homeHeaders"
               :items="items"
               hide-default-footer
       >
@@ -131,7 +132,6 @@
           </tbody>
         </template>
       </v-data-table>
-      <p>hãy xóa tôi</p>
       <v-footer color="blue accent-2" fixed class="d-flex justify-space-between">
 
         <span>
@@ -177,8 +177,8 @@
                   <v-card-text>
                     <ul>
                       <li v-for="(result, index) in testResults" :key="index">
-                        {{result.filename}}
-                        <a :href="`result/${result.filename}`">
+                        {{result.name}}
+                        <a :href="`/result/${result.name}`">
                           <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
                         </a>
                       </li>
@@ -295,7 +295,7 @@
       },
       ...mapState([
               'items',
-              'headers',
+              'homeHeaders',
               'search',
               'selected',
               'testResults',

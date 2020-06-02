@@ -6,7 +6,7 @@ export default new Vuex.Store({
   state: {
     selected: [],
     search: '',
-    headers: [
+    homeHeaders: [
       {
         text: 'No.',
         align: 'start',
@@ -37,6 +37,40 @@ export default new Vuex.Store({
       { text: 'Payment', value: 'payment',sortable: false, divider: true, width: 100 },
       { text: 'Contact', value: 'contact',sortable: false, divider: true, width: 100},
       { text: 'Version', value: 'version',sortable: true, divider: true, width: 100 },
+    ],
+    resultDetailHeaders: [
+      {
+        text: 'No.',
+        align: 'start',
+        sortable: true,
+        filterable: true,
+        divider: true,
+        width: 70
+      },
+      {
+        text: 'Marketplace',
+        align: 'start',
+        sortable: true,
+        filterable: true,
+        divider: true,
+        width: 150
+      },
+      {
+        text: 'Domain',
+        align: 'start',
+        sortable: true,
+        filterable: true,
+        divider: true,
+      },
+
+      { text: 'Order ID', sortable: false, divider: true, width: 100 },
+      { text: 'Payment Method', sortable: false, divider: true, width: 100 },
+      { text: 'Payment Status', sortable: false, divider: true, width: 100 },
+
+      { text: 'Order', sortable: false, divider: true, width: 100 },
+      { text: 'Payment', sortable: false, divider: true, width: 100 },
+      { text: 'Contact', sortable: false, divider: true, width: 100},
+      { text: 'Version', sortable: true, divider: true, width: 100 },
     ],
     items: [],
     testResults: [],
