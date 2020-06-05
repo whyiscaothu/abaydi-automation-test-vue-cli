@@ -13,68 +13,68 @@
             >
                 <template v-slot:body>
                     <tbody>
-                    <tr v-for="(item, index) in getTestResultDetail($route.params.id).data" :key="index" v-if="!item.hide">
-                        <td :search="search">{{index + 1}}</td>
-                        <td :search="search">{{item.marketplace}}</td>
-                        <td :search="search">
-                            <a :href="'https://www.' + item.name" target="_blank">{{ item.name }}</a>
-                        </td>
+                        <tr v-for="(item, index) in getTestResultDetail($route.params.id)" :key="index" v-if="!item.hide">
+                            <td :search="search">{{index + 1}}</td>
+                            <td :search="search">{{item.marketplace}}</td>
+                            <td :search="search">
+                                <a :href="'https://www.' + item.name" target="_blank">{{ item.name }}</a>
+                            </td>
 
 
-                        <td>{{item.resultOrder.orderId}}</td>
-                        <td>{{item.resultOrder.paymentMethod}}</td>
-                        <td>{{item.resultOrder.paymentStatus}}</td>
-                        <td>
+                            <td>{{item.resultOrder.orderId}}</td>
+                            <td>{{item.resultOrder.paymentMethod}}</td>
+                            <td>{{item.resultOrder.paymentStatus}}</td>
+                            <td>
+                                <v-chip
+                                  class="ma-2"
+                                  color="teal"
+                                  text-color="white"
+                                  v-if="item.resultOrder.orderId"
+                                >
+                                    <v-avatar left>
+                                        <v-icon>mdi-checkbox-marked-circle</v-icon>
+                                    </v-avatar>
+                                    Done
+                                </v-chip>
+                                <v-chip
+                                  class="ma-2"
+                                  color="orange"
+                                  text-color="white"
+                                  v-else
+                                >
+                                    <v-avatar left>
+                                        <v-icon>mdi-cancel</v-icon>
+                                    </v-avatar>
+                                    Not Complete
+                                </v-chip>
+                            </td>
+
+
+                            <td>
+                                payment
+                            </td>
+                            <td>
+                                contact
+                            </td>
+                            <!--      if/else block statement-->
                             <v-chip
                               class="ma-2"
-                              color="teal"
+                              color="blue darken-4"
                               text-color="white"
-                              v-if="item.resultOrder.orderId"
-                            >
-                                <v-avatar left>
-                                    <v-icon>mdi-checkbox-marked-circle</v-icon>
-                                </v-avatar>
-                                Done
+                              v-if="item.version === '2.1'">
+                                {{ item.version }}
                             </v-chip>
-                            <v-chip
-                              class="ma-2"
-                              color="orange"
-                              text-color="white"
-                              v-else
-                            >
-                                <v-avatar left>
-                                    <v-icon>mdi-cancel</v-icon>
-                                </v-avatar>
-                                Not Complete
+                            <v-chip class="ma-2" color="blue darken-4" text-color="white" v-if="item.version === '2.2'">
+                                {{ item.version }}
                             </v-chip>
-                        </td>
-
-
-                        <td>
-                            payment
-                        </td>
-                        <td>
-                            contact
-                        </td>
-                        <!--      if/else block statement-->
-                        <v-chip
-                          class="ma-2"
-                          color="blue darken-4"
-                          text-color="white"
-                          v-if="item.version === '2.1'">
-                            {{ item.version }}
-                        </v-chip>
-                        <v-chip class="ma-2" color="blue darken-4" text-color="white" v-if="item.version === '2.2'">
-                            {{ item.version }}
-                        </v-chip>
-                        <v-chip class="ma-2" color="red darken-2" text-color="white" v-if="item.version === '3.0'">
-                            {{ item.version }}
-                        </v-chip>
-                        <v-chip class="ma-2" color="red darken-1" text-color="white" v-if="item.version === '4.0'">
-                            {{ item.version }}
-                        </v-chip>
-                        <!--       End if/else block statement-->
-                    </tr>
+                            <v-chip class="ma-2" color="red darken-2" text-color="white" v-if="item.version === '3.0'">
+                                {{ item.version }}
+                            </v-chip>
+                            <v-chip class="ma-2" color="red darken-1" text-color="white" v-if="item.version === '4.0'">
+                                {{ item.version }}
+                            </v-chip>
+                            <!--       End if/else block statement-->
+                        </tr>
                     </tbody>
                 </template>
             </v-data-table>
@@ -159,8 +159,8 @@
         },
         methods: {
             getTestResultDetail (paramId) {
-                let resultDetail = this.testResults.find(item => item.name === paramId);
-                return resultDetail;
+                let resultDetail = this.testResults.find(item => (+item.name) === (+paramId));
+                return resultDetail.data;
             },
             axiosGetTestResult () {
                 this.$axios.post('http://localhost:9009/test-result').then(({data}) => {
@@ -171,7 +171,7 @@
         },
         created() {
             this.$axios.post('http://localhost:9009/test-result').then(({data}) => {
-                this.$store.commit('getTestResults', data )
+                this.$store.dispatch('getTestResults', data )
             });
             return this.testResults;
         }

@@ -73,7 +73,24 @@ export default new Vuex.Store({
       { text: 'Version', sortable: true, divider: true, width: 100 },
     ],
     items: [],
-    testResults: [],
+    testResults: [
+      {
+        data: [
+          {
+            marketplace: '',
+            name: '',
+            version: '',
+            resultOrder: {
+              orderId: '',
+              paymentMethod: '',
+              paymentStatus: '',
+            },
+          }
+        ],
+        filename: '',
+        name: '',
+      }
+    ],
   },
   getters: {
     countTotalItems: state => {
@@ -107,13 +124,16 @@ export default new Vuex.Store({
     selection (state, value) {
       state.selected = value;
     },
-    getTestResults (state, value) {
-      state.testResults = value
+    getTestResults (state, data) {
+      state.testResults = data
     },
   },
   actions: {
     initData ({state}, value) {
       state.items = value;
+    },
+    getTestResults ({commit}, data) {
+      commit('getTestResults', data)
     },
   },
   modules: {
