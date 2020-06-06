@@ -1,10 +1,6 @@
 <template>
   <v-card>
     <form action="" method="post" @submit.prevent="axiosPostData" class="mb-12 pb-6">
-      <v-card-title>
-        Domain
-        <v-spacer></v-spacer>
-      </v-card-title>
       <v-container fluid>
         <v-row>
           <v-col cols="3">
@@ -14,7 +10,6 @@
                     v-on:change="changeFilter"
                     label="Marketplace"
                     multiple
-                    dense
                     outlined
             >
               <template v-slot:prepend-item>
@@ -29,7 +24,6 @@
                     <v-list-item-title>Select All</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <v-divider class="mt-2"></v-divider>
               </template>
               <template v-slot:selection="{ item, index }">
                 <v-chip v-if="index === 0">
@@ -52,7 +46,6 @@
                     v-on:change="changeFilter"
                     label="Version"
                     multiple
-                    dense
                     outlined
             >
               <template v-slot:prepend-item>
@@ -132,66 +125,7 @@
           </tbody>
         </template>
       </v-data-table>
-      <v-footer color="blue accent-2" fixed class="d-flex justify-space-between">
-
-        <span>
-          <v-badge color="green lighten-1" overlap :content="countTotalItems" v-if="countTotalItems">
-            <v-chip class="ma-2">Domains</v-chip>
-          </v-badge>
-          <span v-else>
-            <v-chip class="ma-2">Domains</v-chip>
-          </span>
-        </span>
-        <span>
-          <v-badge color="green lighten-1" overlap :content="countMarketPlace" v-if="countMarketPlace">
-            <v-chip class="ma-2">Market Place</v-chip>
-          </v-badge>
-          <span v-else>
-            <v-chip class="ma-2">Market Place</v-chip>
-          </span>
-        </span>
-
-        <span>
-          <v-badge color="orange" overlap :content="countSelectedItems" v-if="countSelectedItems">
-            <v-chip class="ma-2">Selected</v-chip>
-          </v-badge>
-          <span v-else>
-            <v-chip class="ma-2">Selected</v-chip>
-          </span>
-        </span>
-
-        <template>
-          <div class="text-center d-flex">
-            <v-row justify="center">
-              <v-dialog v-model="dialog" width="600px">
-                <template v-slot:activator="{ on }">
-                  <v-btn color="green" dark v-on="on" @click="axiosGetTestResult" class="ml-5">
-                    <v-icon color="white">mdi-eye </v-icon>
-                    Result
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Tested result history.</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <ul>
-                      <li v-for="(result, index) in testResults" :key="index">
-                        {{result.name}}
-                        <a :href="`/result/${result.name}`">
-                          <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
-                        </a>
-                      </li>
-                    </ul>
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
-            </v-row>
-
-            <v-btn type="submit" @click="onSubmitClick" class="px-12 ml-5" color="blue-grey lighten-5">Submit</v-btn>
-          </div>
-        </template>
-      </v-footer>
+      <comp-footer />
     </form>
   </v-card>
 </template>
@@ -199,8 +133,11 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { mapGetters } from 'vuex'
+  import CompFooter from './CompFooter';
   export default {
+    components: {
+        CompFooter
+    },
     data(){
       return {
         selectedItems: [],
@@ -208,7 +145,6 @@
         marketplaceItems: [],
         versionSelect: [],
         versionItems: [],
-        dialog: false,
       }
     },
     methods: {
@@ -224,12 +160,7 @@
           })
         }
       },
-      axiosGetTestResult () {
-        this.$axios.post('http://localhost:9009/test-result').then(({data}) => {
-          this.$store.commit('getTestResults', data )
-        });
-        return this.testResults;
-      },
+
       toggleFilterMarketplace () {
         this.$nextTick(() => {
           if (this.marketplaceSelect.length === this.marketplaceItems.length) {
@@ -269,12 +200,15 @@
           }
         }
       },
-      onSubmitClick () {
-        //code goes here
-        alert('đã submit')
-      },
     },
     computed: {
+      ...mapState([
+          'items',
+          'homeHeaders',
+          'search',
+          'selected',
+          'testResults',
+      ]),
       selected: {
         get () {
           return this.selected;
@@ -293,18 +227,6 @@
         if (this.versionSelect.length > 0 && this.versionSelect.length !== this.versionItems.length) return 'mdi-minus-box'
         return 'mdi-checkbox-blank-outline'
       },
-      ...mapState([
-              'items',
-              'homeHeaders',
-              'search',
-              'selected',
-              'testResults',
-      ]),
-      ...mapGetters([
-              'countTotalItems',
-              'countSelectedItems',
-              'countMarketPlace',
-      ])
     },
     created() {
       this.$axios.post(`http://localhost:9009/domains`).then(({data}) => {
